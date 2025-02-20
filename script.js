@@ -1,40 +1,34 @@
 document.addEventListener("DOMContentLoaded", function() {
-    function createBalloon() {
-        let balloon = document.createElement("div");
-        balloon.classList.add("balloon");
-        document.body.appendChild(balloon);
+    function createFloatingElement(type, className, duration, sizeRange, colors = []) {
+        let element = document.createElement("div");
+        element.classList.add(className);
+        document.body.appendChild(element);
 
         let randomLeft = Math.random() * window.innerWidth;
-        let randomDelay = Math.random() * 5;
-        balloon.style.left = `${randomLeft}px`;
-        balloon.style.animationDelay = `${randomDelay}s`;
+        let randomSize = Math.random() * (sizeRange.max - sizeRange.min) + sizeRange.min;
+        let randomDelay = Math.random() * duration;
+        let randomTop = Math.random() * window.innerHeight * 0.3; // Limit animation to the top
+        
+        element.style.left = `${randomLeft}px`;
+        element.style.top = `${randomTop}px`;
+        element.style.animationDelay = `${randomDelay}s`;
+        element.style.width = `${randomSize}px`;
+        element.style.height = `${randomSize}px`;
+        element.style.position = "absolute";
+
+        if (colors.length > 0) {
+            element.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        }
 
         setTimeout(() => {
-            balloon.remove();
-        }, 6000);
+            element.remove();
+        }, duration * 1000);
     }
 
-    function createConfetti() {
-        let confetti = document.createElement("div");
-        confetti.classList.add("confetti");
-        document.body.appendChild(confetti);
-
-        let randomLeft = Math.random() * window.innerWidth;
-        let randomDelay = Math.random() * 3;
-        let randomSize = Math.random() * 10 + 5;
-        let randomColor = ["#FFD700", "#FF4500", "#00FF7F", "#FF69B4"][Math.floor(Math.random() * 4)];
-        
-        confetti.style.left = `${randomLeft}px`;
-        confetti.style.animationDelay = `${randomDelay}s`;
-        confetti.style.width = `${randomSize}px`;
-        confetti.style.height = `${randomSize}px`;
-        confetti.style.backgroundColor = randomColor;
-        
-        setTimeout(() => {
-            confetti.remove();
-        }, 4000);
+    function startAnimation() {
+        setInterval(() => createFloatingElement("balloon", "balloon", 6, { min: 40, max: 60 }, ["#FF69B4", "#FFD700", "#87CEFA", "#FF4500"]), 1200);
+        setInterval(() => createFloatingElement("confetti", "confetti", 4, { min: 5, max: 15 }, ["#FFD700", "#FF4500", "#00FF7F", "#FF69B4"]), 200);
     }
 
-    setInterval(createBalloon, 1000);
-    setInterval(createConfetti, 300);
+    startAnimation();
 });
